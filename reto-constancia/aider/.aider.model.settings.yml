@@ -1,0 +1,12 @@
+# Mismo contexto y mismo tope de respuesta para los 4 modelos.
+# num_predict 8192: si un modelo entra en bucle de repetición, la respuesta se corta
+# y aider puede intentarlo en la siguiente ronda (en lugar de quemar los 45 min en una sola).
+# qwen35-duelo = tag local de Qwen 3.5 (4.7B) creado en el ep. 1. Cambia los nombres por los modelos que tengas.
+- name: ollama_chat/qwen35-duelo
+  extra_params: {num_ctx: 16384, num_predict: 8192}
+- name: ollama_chat/qwen3.5:9b
+  extra_params: {num_ctx: 16384, num_predict: 8192}
+- name: ollama_chat/qwen2.5-coder:7b
+  extra_params: {num_ctx: 16384, num_predict: 8192}
+- name: ollama_chat/qwen2.5-coder:14b
+  extra_params: {num_ctx: 16384, num_predict: 8192}
