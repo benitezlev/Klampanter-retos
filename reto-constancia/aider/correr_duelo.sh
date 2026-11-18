@@ -45,7 +45,7 @@ for fila in "${MODELOS[@]}"; do
   touch database/database.sqlite
   composer install -q --no-interaction && php artisan key:generate -q --force && php artisan migrate -q --force
   rm -rf public/build && cp -r "$BASE_REPO/public/build" public/ 2>/dev/null   # assets compilados (no están en git)
-  printf '.aider*\n' >> .git/info/exclude 2>/dev/null || true
+  printf '.aider*\n' >> "$(git rev-parse --git-path info/exclude)"   # en un worktree .git es archivo
 
   # 1b) la base debe estar 100% verde antes de empezar
   base=$(php artisan test --compact 2>&1 | grep -E "Tests:" | tail -1)
@@ -63,7 +63,7 @@ cd "$dir"; fin=\$(( \$(date +%s) + $LIMITE_SEG )); msg="$D/prompt.md"
 for r in \$(seq 1 $MAX_RONDAS); do
   resta=\$(( fin - \$(date +%s) )); (( resta <= 30 )) && break
   echo; echo "━━━━━━━━ RONDA \$r · quedan \$((resta/60)) min ━━━━━━━━"
-  timeout \$resta aider --model $modelo --model-settings-file $D/.aider.model.settings.yml \\
+  timeout --foreground \$resta aider --model $modelo --model-settings-file $D/.aider.model.settings.yml \\
     --yes-always --no-auto-commits --no-show-model-warnings --no-check-update --no-analytics \\
     --no-show-release-notes --no-detect-urls --no-gitignore --restore-chat-history \\
     --lint-cmd 'php: php -l' --auto-lint --test-cmd 'php artisan test --compact' --auto-test \\
